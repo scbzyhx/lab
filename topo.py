@@ -10,7 +10,7 @@ from mininet.util import quietRun
 from mininet.link import TCLink
 
 DPID_BASE = 0
-IP_BASE = "192.168.100."
+IP_BASE = "192.168.111."
 IP_START = 50
 
 def fixNetworkManager( root, intf ):
@@ -72,6 +72,7 @@ def startNAT(root,inetIntf='eth0',subnet='10.0.0.0/8'):
     root.cmd('iptables -t nat -A POSTROUTING -o',inetIntf, '-j MASQUERADE')
 
     root.cmd('sysctl net.ipv4.ip_forward=1')
+    root.cmd('sysctl net.ipv4.conf.all.arp_fileter=1')
 
 
 def stopNAT(root):
@@ -82,7 +83,8 @@ def stopNAT(root):
 def setRoute(host,out_intf,subnet='10.0.0.0/8'):
     host.cmd('ip route flush root 0/0')
 
-    host.cmd('route add -net 192.168.0.0/24 dev ' ,host.defaultIntf())
+    host.cmd('route add -net ',IP_BASE+'0/24 ','dev ' ,host.defaultIntf())
+    #host.cmd('route add -net ',IP_BASE+'0/24',192.168.0.0/24 dev ' ,host.defaultIntf())
     host.cmd('route add -net',subnet,'dev ',out_intf)#host.defaultIntf())
     host.cmd('route add default gw','10.0.0.254')
     #host.cmd('route add -net 192.168.0.0/24 dev h1-eth1')
@@ -153,7 +155,7 @@ def TurnNet():
         else:
             setDNS(host)
             host.setIP(IP_BASE + "%d" %(IP_START+int(h)),24)
-	    setGateway(host)
+            setGateway(host)
 
     root = connectToInternet(net,'h1')
     net.start()
