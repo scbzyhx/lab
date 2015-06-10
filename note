@@ -1,0 +1,4 @@
+1. up nf2c0 in host
+2. up br0 in host
+3. ovs-vsctl add-port x x
+4. startNAT modify interface

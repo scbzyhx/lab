@@ -35,7 +35,7 @@ def connectToInternet( network,host ):
     #host.cmd( 'cd ./http_%s/; nohup python2.7 ./webserver.py &' % (host.name) )
     root = Node('root',inNamespace = False)
     host = network.get(host)
-    fixNetworkManager(root,'root-eth0')
+    #fixNetworkManager(root,'root-eth0')
 
     #create link
     link = network.addLink(root,host)
@@ -47,7 +47,7 @@ def connectToInternet( network,host ):
     #print '\n\n'
     #network.start()
     info('gateway of mininet ',host.name,'\n')
-    startNAT(root,"eth0")
+    startNAT(root,'eth1')
     startNAT(host,link.intf2.name)
     setRoute(host,link.intf2)
     return root
